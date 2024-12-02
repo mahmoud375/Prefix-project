@@ -4,6 +4,7 @@ from tkinter import ttk
 from pythonds.basic.stack import Stack
 import math
 
+# Function to convert infix to postfix
 def infix2postfix(infixInput):
     priority = {"^": 4, "*": 3, "/": 3, "-": 2, "+": 2, "%": 2, "(": 1}
     operation = Stack()
@@ -35,6 +36,7 @@ def infix2postfix(infixInput):
     
     return " ".join(postfix)
 
+# Reverse the expression for prefix conversion
 def revExp(exp):
     exp = exp.split()[::-1]
     for i in range(len(exp)):
@@ -44,6 +46,7 @@ def revExp(exp):
             exp[i] = "("
     return exp  
 
+# Perform mathematical operations
 def doMath(operator, operand1, operand2=None):
     try:
         operand1 = float(operand1)
@@ -73,6 +76,7 @@ def doMath(operator, operand1, operand2=None):
     else:
         return "math error"
 
+# Evaluate prefix expression
 def mathEvaluation(expr, var_values):
     opStack = Stack()
     tokenlist = expr.split()
@@ -107,6 +111,7 @@ def mathEvaluation(expr, var_values):
     else:
         return "Error: Invalid expression"
 
+# Validate parentheses in the expression
 def validate_expression(expr):
     balance = 0
     for char in expr:
@@ -118,6 +123,7 @@ def validate_expression(expr):
             return False
     return balance == 0
 
+# Evaluate expression button action
 def evaluate_expression():
     infix = entry.get()
     if not validate_expression(infix):
@@ -150,7 +156,14 @@ def evaluate_expression():
     result = mathEvaluation(prefix, var_values)
     result_label.config(text=f"Result: {result}")
 
-# GUI Improvements
+# Reset all fields
+def reset_fields():
+    """Reset all input and output fields."""
+    entry.delete(0, tk.END)
+    prefix_label.config(text="Prefix: ")
+    result_label.config(text="Result: ")
+
+# GUI Setup
 root = tk.Tk()
 root.title("Infix to Prefix Converter and Evaluator")
 root.geometry("700x500")
@@ -169,7 +182,10 @@ entry = ttk.Entry(frame, width=50)
 entry.grid(row=0, column=1, pady=10, padx=10)
 
 evaluate_btn = ttk.Button(frame, text="Evaluate", command=evaluate_expression)
-evaluate_btn.grid(row=1, column=0, columnspan=2, pady=20)
+evaluate_btn.grid(row=1, column=0, pady=20)
+
+reset_btn = ttk.Button(frame, text="Reset", command=reset_fields)
+reset_btn.grid(row=1, column=1, pady=20)
 
 prefix_label = ttk.Label(frame, text="Prefix: ")
 prefix_label.grid(row=2, column=0, columnspan=2, pady=10)
@@ -178,4 +194,5 @@ result_label = ttk.Label(frame, text="Result: ")
 result_label.grid(row=3, column=0, columnspan=2, pady=10)
 
 root.mainloop()
+
 
