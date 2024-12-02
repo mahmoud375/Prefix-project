@@ -160,6 +160,7 @@ def evaluate_expression():
             return
         try:
             var_values[var] = float(value)
+            update_variable_display(var, value)  # Update variable display
         except ValueError:
             messagebox.showerror("Error", f"Invalid value for {var}. Please enter a number.")
             return
@@ -173,11 +174,18 @@ def reset_fields():
     entry.delete(0, tk.END)
     prefix_label.config(text="Prefix: ")
     result_label.config(text="Result: ")
+    variable_display.delete("1.0", tk.END)
+
+# Update variable display
+def update_variable_display(variable, value):
+    """Update the display area with the current variable and its value."""
+    variable_display.insert(tk.END, f"{variable} = {value}\n")
+    variable_display.see(tk.END)
 
 # GUI Setup
 root = tk.Tk()
 root.title("Infix to Prefix Converter and Evaluator")
-root.geometry("700x500")
+root.geometry("700x600")
 root.configure(bg="#1c2833")
 
 style = ttk.Style()
@@ -198,10 +206,14 @@ evaluate_btn.grid(row=1, column=0, pady=20)
 reset_btn = ttk.Button(frame, text="Reset", command=reset_fields)
 reset_btn.grid(row=1, column=1, pady=20)
 
+ttk.Label(frame, text="Variables and Values:").grid(row=2, column=0, columnspan=2, pady=5)
+variable_display = tk.Text(frame, height=5, width=50, font=("Arial", 12))
+variable_display.grid(row=3, column=0, columnspan=2, pady=10)
+
 prefix_label = ttk.Label(frame, text="Prefix: ")
-prefix_label.grid(row=2, column=0, columnspan=2, pady=10)
+prefix_label.grid(row=4, column=0, columnspan=2, pady=10)
 
 result_label = ttk.Label(frame, text="Result: ")
-result_label.grid(row=3, column=0, columnspan=2, pady=10)
+result_label.grid(row=5, column=0, columnspan=2, pady=10)
 
 root.mainloop()
