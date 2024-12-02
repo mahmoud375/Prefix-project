@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 from tkinter import ttk
 from pythonds.basic.stack import Stack
+import math
 
 def infix2postfix(infixInput):
-    priority = {"^": 4, "*": 3, "/": 3, "-": 2, "+": 2, "(": 1}
+    priority = {"^": 4, "*": 3, "/": 3, "-": 2, "+": 2, "%": 2, "(": 1}
     operation = Stack()
     postfix = []
     tokenlist = infixInput.split()
@@ -43,10 +44,11 @@ def revExp(exp):
             exp[i] = "("
     return exp  
 
-def doMath(operator, operand1, operand2):
+def doMath(operator, operand1, operand2=None):
     try:
         operand1 = float(operand1)
-        operand2 = float(operand2)
+        if operand2 is not None:
+            operand2 = float(operand2)
     except ValueError:
         return "math error"
     
@@ -58,10 +60,16 @@ def doMath(operator, operand1, operand2):
         return operand1 * operand2
     elif operator == "/" and operand2 != 0:
         return operand1 / operand2
-    elif operator == "%" and operand2 != 0:
+    elif operator == "%":
         return operand1 % operand2
     elif operator == "^":
         return operand1 ** operand2
+    elif operator == "sin":
+        return math.sin(math.radians(operand1))
+    elif operator == "cos":
+        return math.cos(math.radians(operand1))
+    elif operator == "sqrt":
+        return math.sqrt(operand1)
     else:
         return "math error"
 
@@ -78,11 +86,18 @@ def mathEvaluation(expr, var_values):
             else:
                 return f"Error: Variable {token} is not assigned a value."
         else:
-            if opStack.size() < 2:
-                return "Can't evaluate, too few operands"
-            operand1 = opStack.pop()
-            operand2 = opStack.pop()
-            result = doMath(token, operand1, operand2)
+            if token in ["sin", "cos", "sqrt"]:
+                if opStack.size() < 1:
+                    return "Error: Too few operands for operation"
+                operand1 = opStack.pop()
+                result = doMath(token, operand1)
+            else:
+                if opStack.size() < 2:
+                    return "Error: Too few operands"
+                operand1 = opStack.pop()
+                operand2 = opStack.pop()
+                result = doMath(token, operand1, operand2)
+            
             if result == "math error":
                 return "Error during calculation"
             opStack.push(result)
@@ -90,7 +105,7 @@ def mathEvaluation(expr, var_values):
     if opStack.size() == 1:
         return opStack.pop()
     else:
-        return "Can't evaluate, invalid expression"
+        return "Error: Invalid expression"
 
 def validate_expression(expr):
     balance = 0
@@ -102,7 +117,6 @@ def validate_expression(expr):
         if balance < 0:
             return False
     return balance == 0
-
 
 def evaluate_expression():
     infix = entry.get()
@@ -136,22 +150,22 @@ def evaluate_expression():
     result = mathEvaluation(prefix, var_values)
     result_label.config(text=f"Result: {result}")
 
-
+# GUI Improvements
 root = tk.Tk()
 root.title("Infix to Prefix Converter and Evaluator")
-root.geometry("600x400")
-root.configure(bg="#2c3e50")  
+root.geometry("700x500")
+root.configure(bg="#1c2833")
 
 style = ttk.Style()
-style.configure("TButton", font=("Arial", 12), padding=10, background="#3498db", foreground="white")
-style.configure("TLabel", font=("Arial", 12), background="#2c3e50", foreground="white")
-style.configure("TEntry", font=("Arial", 14))
+style.configure("TButton", font=("Arial", 14), padding=10, background="#3498db", foreground="white")
+style.configure("TLabel", font=("Arial", 14), background="#1c2833", foreground="white")
+style.configure("TEntry", font=("Arial", 16))
 
-frame = ttk.Frame(root, padding=20)
+frame = ttk.Frame(root, padding=30, style="TFrame")
 frame.pack(expand=True)
 
 ttk.Label(frame, text="Enter Infix Expression:").grid(row=0, column=0, pady=10, sticky="w")
-entry = ttk.Entry(frame, width=40)
+entry = ttk.Entry(frame, width=50)
 entry.grid(row=0, column=1, pady=10, padx=10)
 
 evaluate_btn = ttk.Button(frame, text="Evaluate", command=evaluate_expression)
