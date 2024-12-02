@@ -103,7 +103,7 @@ def validate_expression(expr):
             return False
     return balance == 0
 
-# واجهة المستخدم
+
 def evaluate_expression():
     infix = entry.get()
     if not validate_expression(infix):
@@ -120,7 +120,6 @@ def evaluate_expression():
     prefix = " ".join(revExp(postfix))
     prefix_label.config(text=f"Prefix: {prefix}")
     
-    # جمع القيم للمتغيرات
     variables = set(filter(str.isalpha, infix))
     var_values = {}
     
@@ -137,19 +136,17 @@ def evaluate_expression():
     result = mathEvaluation(prefix, var_values)
     result_label.config(text=f"Result: {result}")
 
-# إنشاء نافذة
+
 root = tk.Tk()
 root.title("Infix to Prefix Converter and Evaluator")
 root.geometry("600x400")
-root.configure(bg="#2c3e50")  # لون الخلفية
+root.configure(bg="#2c3e50")  
 
-# إنشاء الأنماط
 style = ttk.Style()
 style.configure("TButton", font=("Arial", 12), padding=10, background="#3498db", foreground="white")
 style.configure("TLabel", font=("Arial", 12), background="#2c3e50", foreground="white")
 style.configure("TEntry", font=("Arial", 14))
 
-# عناصر الواجهة
 frame = ttk.Frame(root, padding=20)
 frame.pack(expand=True)
 
@@ -166,6 +163,5 @@ prefix_label.grid(row=2, column=0, columnspan=2, pady=10)
 result_label = ttk.Label(frame, text="Result: ")
 result_label.grid(row=3, column=0, columnspan=2, pady=10)
 
-# بدء التشغيل
 root.mainloop()
 
