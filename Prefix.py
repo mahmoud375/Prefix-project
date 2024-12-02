@@ -1,13 +1,15 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
 from pythonds.basic.stack import Stack
 
 def infix2postfix(infixInput):
     priority = {"^": 4, "*": 3, "/": 3, "-": 2, "+": 2, "(": 1}
     operation = Stack()
     postfix = []
-    tokenlist = infixInput
+    tokenlist = infixInput.split()
     
     for token in tokenlist:
-        if token.isalpha() or token.isdigit():  # حرف أو رقم
+        if token.isalpha() or token.isdigit():
             postfix.append(token)
         elif token == "(":
             operation.push(token)
@@ -15,7 +17,7 @@ def infix2postfix(infixInput):
             while not operation.isEmpty() and operation.peek() != "(":
                 postfix.append(operation.pop())
             if not operation.isEmpty():
-                operation.pop()  # إزالة "("
+                operation.pop()
             else:
                 return "Error: Unbalanced parentheses"
         else:
@@ -32,9 +34,7 @@ def infix2postfix(infixInput):
     return " ".join(postfix)
 
 def revExp(exp):
-    if isinstance(exp, str):
-        exp = exp.split()
-    exp = exp[::-1]
+    exp = exp.split()[::-1]
     for i in range(len(exp)):
         if exp[i] == "(":
             exp[i] = ")"
@@ -64,19 +64,18 @@ def doMath(operator, operand1, operand2):
     else:
         return "math error"
 
-def mathEvaluation(expr):
+def mathEvaluation(expr, var_values):
     opStack = Stack()
     tokenlist = expr.split()
     
     for token in reversed(tokenlist):
-        if token.replace('.', '', 1).isdigit():  # دعم الأرقام العشرية
+        if token.replace('.', '', 1).isdigit():
             opStack.push(float(token))
         elif token.isalpha():
-            value = input(f"Enter value for {token}: ")
-            try:
-                opStack.push(float(value))
-            except ValueError:
-                return f"Invalid value for variable {token}. Please enter a number."
+            if token in var_values:
+                opStack.push(float(var_values[token]))
+            else:
+                return f"Error: Variable {token} is not assigned a value."
         else:
             if opStack.size() < 2:
                 return "Can't evaluate, too few operands"
@@ -103,29 +102,60 @@ def validate_expression(expr):
             return False
     return balance == 0
 
-if __name__ == '__main__':
-    print("Welcome to the infix-to-prefix converter and evaluator!")
-    print("Type 'exit' to quit.")
+# واجهة المستخدم
+def evaluate_expression():
+    infix = entry.get()
+    if not validate_expression(infix):
+        messagebox.showerror("Error", "Unbalanced parentheses")
+        return
     
-    while True:
-        user_input = input("\nEnter infix expression: ")
-        if user_input.lower() == "exit":
-            print("Goodbye!")
-            break
-        
-        if not validate_expression(user_input):
-            print("Error: Unbalanced parentheses")
-            continue
-        
-        rev_input = revExp(user_input)
-        postfix = infix2postfix(rev_input)
-        
-        if "Error" in postfix:
-            print(postfix)
-            continue
-        
-        prefix = "".join(reversed(postfix))
-        print(f'Prefix:-->  {prefix}')
-        
-        result = mathEvaluation(prefix)
-        print(f'Result:-->  {result}')
+    rev_input = revExp(infix)
+    postfix = infix2postfix(" ".join(rev_input))
+    
+    if "Error" in postfix:
+        messagebox.showerror("Error", postfix)
+        return
+    
+    prefix = " ".join(revExp(postfix))
+    prefix_label.config(text=f"Prefix: {prefix}")
+    
+    # جمع القيم للمتغيرات
+    variables = set(filter(str.isalpha, infix))
+    var_values = {}
+    
+    for var in variables:
+        value = tk.simpledialog.askstring("Variable Value", f"Enter value for {var}:")
+        if value is None:
+            return
+        try:
+            var_values[var] = float(value)
+        except ValueError:
+            messagebox.showerror("Error", f"Invalid value for {var}. Please enter a number.")
+            return
+    
+    result = mathEvaluation(prefix, var_values)
+    result_label.config(text=f"Result: {result}")
+
+# إنشاء نافذة
+root = tk.Tk()
+root.title("Infix to Prefix Converter and Evaluator")
+
+# عناصر الواجهة
+frame = tk.Frame(root, padx=10, pady=10)
+frame.pack()
+
+tk.Label(frame, text="Enter Infix Expression:").grid(row=0, column=0, pady=5)
+entry = tk.Entry(frame, width=30)
+entry.grid(row=0, column=1, pady=5)
+
+evaluate_btn = tk.Button(frame, text="Evaluate", command=evaluate_expression)
+evaluate_btn.grid(row=1, column=0, columnspan=2, pady=10)
+
+prefix_label = tk.Label(frame, text="Prefix: ", fg="blue")
+prefix_label.grid(row=2, column=0, columnspan=2)
+
+result_label = tk.Label(frame, text="Result: ", fg="green")
+result_label.grid(row=3, column=0, columnspan=2)
+
+# بدء التشغيل
+root.mainloop()
