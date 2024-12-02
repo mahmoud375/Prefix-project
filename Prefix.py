@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+from tkinter import ttk
 from pythonds.basic.stack import Stack
 
 def infix2postfix(infixInput):
@@ -124,7 +125,7 @@ def evaluate_expression():
     var_values = {}
     
     for var in variables:
-        value = tk.simpledialog.askstring("Variable Value", f"Enter value for {var}:")
+        value = simpledialog.askstring("Variable Value", f"Enter value for {var}:")
         if value is None:
             return
         try:
@@ -139,23 +140,32 @@ def evaluate_expression():
 # إنشاء نافذة
 root = tk.Tk()
 root.title("Infix to Prefix Converter and Evaluator")
+root.geometry("600x400")
+root.configure(bg="#2c3e50")  # لون الخلفية
+
+# إنشاء الأنماط
+style = ttk.Style()
+style.configure("TButton", font=("Arial", 12), padding=10, background="#3498db", foreground="white")
+style.configure("TLabel", font=("Arial", 12), background="#2c3e50", foreground="white")
+style.configure("TEntry", font=("Arial", 14))
 
 # عناصر الواجهة
-frame = tk.Frame(root, padx=10, pady=10)
-frame.pack()
+frame = ttk.Frame(root, padding=20)
+frame.pack(expand=True)
 
-tk.Label(frame, text="Enter Infix Expression:").grid(row=0, column=0, pady=5)
-entry = tk.Entry(frame, width=30)
-entry.grid(row=0, column=1, pady=5)
+ttk.Label(frame, text="Enter Infix Expression:").grid(row=0, column=0, pady=10, sticky="w")
+entry = ttk.Entry(frame, width=40)
+entry.grid(row=0, column=1, pady=10, padx=10)
 
-evaluate_btn = tk.Button(frame, text="Evaluate", command=evaluate_expression)
-evaluate_btn.grid(row=1, column=0, columnspan=2, pady=10)
+evaluate_btn = ttk.Button(frame, text="Evaluate", command=evaluate_expression)
+evaluate_btn.grid(row=1, column=0, columnspan=2, pady=20)
 
-prefix_label = tk.Label(frame, text="Prefix: ", fg="blue")
-prefix_label.grid(row=2, column=0, columnspan=2)
+prefix_label = ttk.Label(frame, text="Prefix: ")
+prefix_label.grid(row=2, column=0, columnspan=2, pady=10)
 
-result_label = tk.Label(frame, text="Result: ", fg="green")
-result_label.grid(row=3, column=0, columnspan=2)
+result_label = ttk.Label(frame, text="Result: ")
+result_label.grid(row=3, column=0, columnspan=2, pady=10)
 
 # بدء التشغيل
 root.mainloop()
+
