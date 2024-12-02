@@ -13,7 +13,7 @@ This repository contains the **Prefix Project**, a program designed to handle pr
 To run this project, ensure you have the following installed:
 
 - **Python 3.x** or higher
-- Any additional libraries (if required, list them here)
+- (tkinter, pythonds)
 
 ## Installation
 
