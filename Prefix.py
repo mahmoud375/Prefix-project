@@ -4,6 +4,16 @@ from tkinter import ttk
 from pythonds.basic.stack import Stack
 import math
 
+# Function to format the expression by adding spaces
+def format_expression(expression):
+    formatted = ""
+    for char in expression:
+        if char in "+-*/%^()":
+            formatted += f" {char} "
+        else:
+            formatted += char
+    return " ".join(formatted.split())  # Remove any extra spaces
+
 # Function to convert infix to postfix
 def infix2postfix(infixInput):
     priority = {"^": 4, "*": 3, "/": 3, "-": 2, "+": 2, "%": 2, "(": 1}
@@ -126,6 +136,7 @@ def validate_expression(expr):
 # Evaluate expression button action
 def evaluate_expression():
     infix = entry.get()
+    infix = format_expression(infix)
     if not validate_expression(infix):
         messagebox.showerror("Error", "Unbalanced parentheses")
         return
@@ -194,5 +205,3 @@ result_label = ttk.Label(frame, text="Result: ")
 result_label.grid(row=3, column=0, columnspan=2, pady=10)
 
 root.mainloop()
-
-
