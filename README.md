@@ -22,7 +22,7 @@ To run this project, ensure you have the following installed:
 Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/Infix-to-Prefix-Converter.git
+git clone https://github.com/mahmoud375/Prefix-project.git
 cd Infix-to-Prefix-Converter
 ```
 
