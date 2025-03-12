@@ -23,7 +23,7 @@ Clone this repository to your local machine:
 
 ```bash
 git clone https://github.com/mahmoud375/Prefix-project.git
-cd Infix-to-Prefix-Converter
+cd Prefix-project
 ```
 
 Navigate to the project directory and install dependencies:
